@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Document RMD pour générer la carte du monde avec l'évolution jour par jour avec les différents cas (décés, rétablis, confirmés).
 Essayer de faire une carte avec une timeline (leaftime).
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(dplyr) 
 library(tidyr)
 library(leaflet)
@@ -22,10 +22,8 @@ library(leaftime)
 
 ```{r}
 CoronavirusWorld <- utils::read.csv("https://raw.githubusercontent.com/RamiKrispin/coronavirus-csv/master/coronavirus_dataset.csv")
-```
 
-```{r}
-View(CoronavirusWorld)
+CoronavirusWorld[CoronavirusWorld == "" ] <- NA
 ```
 
 ```{r}
@@ -38,49 +36,55 @@ CoronavirusWorld$date <- as.Date(CoronavirusWorld$date)
 ```
 
 ```{r}
-CoronavirusWorld$category <- ifelse(
-  CoronavirusWorld$cases >= -1 &
-    CoronavirusWorld$cases <= 0,
+CoronavirusWorld2 <- spread(CoronavirusWorld, "type", "cases")
+
+WorldSpreadCovid <- CoronavirusWorld2 %>% group_by(name) %>% mutate(CumulConfirmes=cumsum(confirmed)) %>% mutate(CumulMorts=cumsum(death)) %>% mutate(CumulSoignes=cumsum(recovered))
+```
+
+```{r}
+WorldSpreadCovid$category1 <- ifelse(
+  WorldSpreadCovid$CumulConfirmes >= -1 &
+    WorldSpreadCovid$CumulConfirmes <= 0,
   0,
   ifelse(
-    CoronavirusWorld$cases >= 1 &
-      CoronavirusWorld$cases <= 100,
+    WorldSpreadCovid$CumulConfirmes >= 1 &
+      WorldSpreadCovid$CumulConfirmes <= 100,
     1,
     ifelse(
-      CoronavirusWorld$cases >= 101 &
-        CoronavirusWorld$cases <= 1000,
+      WorldSpreadCovid$CumulConfirmes >= 101 &
+        WorldSpreadCovid$CumulConfirmes <= 1000,
       2,
       ifelse(
-        CoronavirusWorld$cases >= 1001 &
-          CoronavirusWorld$cases <= 3000,
+        WorldSpreadCovid$CumulConfirmes >= 1001 &
+          WorldSpreadCovid$CumulConfirmes <= 3000,
         4,
         ifelse(
-          CoronavirusWorld$cases >= 3001 &
-            CoronavirusWorld$cases <= 5000,
+          WorldSpreadCovid$CumulConfirmes >= 3001 &
+            WorldSpreadCovid$CumulConfirmes <= 5000,
           5,
           ifelse(
-            CoronavirusWorld$cases >= 5001 &
-              CoronavirusWorld$cases <= 10000,
+            WorldSpreadCovid$CumulConfirmes >= 5001 &
+              WorldSpreadCovid$CumulConfirmes <= 10000,
             8,
             ifelse(
-              CoronavirusWorld$cases >= 10001 &
-                CoronavirusWorld$cases <= 20000,
+              WorldSpreadCovid$CumulConfirmes >= 10001 &
+                WorldSpreadCovid$CumulConfirmes <= 20000,
               10,
               ifelse(
-                CoronavirusWorld$cases >= 20001 &
-                  CoronavirusWorld$cases <= 50000,
+                WorldSpreadCovid$CumulConfirmes >= 20001 &
+                  WorldSpreadCovid$CumulConfirmes <= 50000,
                 15,
                 ifelse(
-                  CoronavirusWorld$cases >= 50001 &
-                    CoronavirusWorld$cases <= 100000,
+                  WorldSpreadCovid$CumulConfirmes >= 50001 &
+                    WorldSpreadCovid$CumulConfirmes <= 100000,
                   20,
                   ifelse(
-                    CoronavirusWorld$cases >= 100001 &
-                      CoronavirusWorld$cases <= 200000,
+                    WorldSpreadCovid$CumulConfirmes >= 100001 &
+                      WorldSpreadCovid$CumulConfirmes <= 200000,
                     25,
                     ifelse(
-                      CoronavirusWorld$cases >= 200001 &
-                        CoronavirusWorld$cases <= Inf,
+                      WorldSpreadCovid$CumulConfirmes >= 200001 &
+                        WorldSpreadCovid$CumulConfirmes <= Inf,
                       30,
                       35
                     )
@@ -97,24 +101,139 @@ CoronavirusWorld$category <- ifelse(
 ```
 
 ```{r}
-ZtestCovid <- filter(CoronavirusWorld, type == "confirmed" & date =="2020-04-08")
+WorldSpreadCovid$category2 <- ifelse(
+  WorldSpreadCovid$CumulMorts >= -1 &
+    WorldSpreadCovid$CumulMorts <= 0,
+  0,
+  ifelse(
+    WorldSpreadCovid$CumulMorts >= 1 &
+      WorldSpreadCovid$CumulMorts <= 10,
+    1,
+    ifelse(
+      WorldSpreadCovid$CumulMorts >= 11 &
+        WorldSpreadCovid$CumulMorts <= 50,
+      2,
+      ifelse(
+        WorldSpreadCovid$CumulMorts >= 51 &
+          WorldSpreadCovid$CumulMorts <= 200,
+        4,
+        ifelse(
+          WorldSpreadCovid$CumulMorts >= 201 &
+            WorldSpreadCovid$CumulMorts <= 500,
+          5,
+          ifelse(
+            WorldSpreadCovid$CumulMorts >= 501 &
+              WorldSpreadCovid$CumulMorts <= 1000,
+            8,
+            ifelse(
+              WorldSpreadCovid$CumulMorts >= 1001 &
+                WorldSpreadCovid$CumulMorts <= 2000,
+              10,
+              ifelse(
+                WorldSpreadCovid$CumulMorts >= 2001 &
+                  WorldSpreadCovid$CumulMorts <= 5000,
+                15,
+                ifelse(
+                  WorldSpreadCovid$CumulMorts >= 5001 &
+                    WorldSpreadCovid$CumulMorts <= 10000,
+                  20,
+                  ifelse(
+                    WorldSpreadCovid$CumulMorts >= 10001 &
+                      WorldSpreadCovid$CumulMorts <= 20000,
+                    25,
+                    ifelse(
+                      WorldSpreadCovid$CumulMorts >= 20001 &
+                        WorldSpreadCovid$CumulMorts <= Inf,
+                      30,
+                      35
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
 ```
 
 ```{r}
-content <- paste("<strong>", ZtestCovid$name, "</strong>", "<br/>", ZtestCovid$cases, "Cases")
+WorldSpreadCovid$category3 <- ifelse(
+  WorldSpreadCovid$CumulSoignes >= -1 &
+    WorldSpreadCovid$CumulSoignes <= 0,
+  0,
+  ifelse(
+    WorldSpreadCovid$CumulSoignes >= 1 &
+      WorldSpreadCovid$CumulSoignes <= 10,
+    1,
+    ifelse(
+      WorldSpreadCovid$CumulSoignes >= 11 &
+        WorldSpreadCovid$CumulSoignes <= 50,
+      2,
+      ifelse(
+        WorldSpreadCovid$CumulSoignes >= 51 &
+          WorldSpreadCovid$CumulSoignes <= 200,
+        4,
+        ifelse(
+          WorldSpreadCovid$CumulSoignes >= 201 &
+            WorldSpreadCovid$CumulSoignes <= 500,
+          5,
+          ifelse(
+            WorldSpreadCovid$CumulSoignes >= 501 &
+              WorldSpreadCovid$CumulSoignes <= 1000,
+            8,
+            ifelse(
+              WorldSpreadCovid$CumulSoignes >= 1001 &
+                WorldSpreadCovid$CumulSoignes <= 5000,
+              10,
+              ifelse(
+                WorldSpreadCovid$CumulSoignes >= 5001 &
+                  WorldSpreadCovid$CumulSoignes <= 10000,
+                15,
+                ifelse(
+                  WorldSpreadCovid$CumulSoignes >= 10001 &
+                    WorldSpreadCovid$CumulSoignes <= 20000,
+                  20,
+                  ifelse(
+                    WorldSpreadCovid$CumulSoignes >= 20001 &
+                      WorldSpreadCovid$CumulSoignes <= 50000,
+                    25,
+                    ifelse(
+                      WorldSpreadCovid$CumulSoignes >= 50001 &
+                        WorldSpreadCovid$CumulSoignes <= Inf,
+                      30,
+                      35
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+```
 
-leaflet(ZtestCovid) %>% 
+```{r}
+WorldMapCovid <- filter(WorldSpreadCovid, date =="2020-04-08")
+```
+
+```{r}
+content <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Cases")
+
+leaflet(WorldMapCovid) %>% 
   addFullscreenControl() %>%
   addProviderTiles(providers$CartoDB.DarkMatter) %>%
   addCircleMarkers(
-    radius = ~sqrt(category)*5, popup = content,
+    radius = ~sqrt(category1)*5, popup = content,
     color = "red",
     stroke = FALSE, fillOpacity = 0.3
   )
 ```
-
-Problème de nom à régler sur la carte (le nom du pays ne s'affiche pas en cliquant sur le popup)
-Penser également à faire le cumul sur la carte
 
 Ensuite, rajouter une option permettant de visualiser par type de cas.
 Puis rajouter une une timeline en bas du graphique pour pouvoir voir l'évolution
