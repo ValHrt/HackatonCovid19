@@ -34,6 +34,8 @@ library(plotly)
 library(kableExtra)
 library(readr)
 library(readxl)
+library(dplyr)
+library(rAmCharts)
 ```
 
 ```{r}
@@ -280,9 +282,27 @@ ggplot(CAC40) +
  geom_line(size = 0.78) +
  scale_color_hue() +
  labs(x = "Date", y = "Cours de cloture", title = "Évolution de l'indice boursier CAC 40", subtitle = "Depuis janvier 2020") +
- ggthemes::theme_solarized()
+ hrbrthemes::theme_modern_rc()
+```
+
+# Évolution du S&P 500
+
+```{r}
+SP500 <- read_xlsx("SPX.xlsx")
+
+SP500$date <- as.Date(SP500$date) #mettre la colonne date sous le bon format
+SP500 <- dplyr::rename(SP500, cloture = fermeture)
+
+ggplot(SP500) +
+ aes(x = date, y = cloture) +
+ geom_line(size = 0.78, colour = "#0c4c8a") +
+ labs(x = "Date", y = "Cours de cloture", title = "Evolution du S&P 500", subtitle = "depuis janvier 2020") +
+ hrbrthemes::theme_modern_rc()
 
 ```
+
+
+
 
 
 
