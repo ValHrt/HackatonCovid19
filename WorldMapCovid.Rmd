@@ -237,3 +237,5 @@ leaflet(WorldMapCovid) %>%
 
 Ensuite, rajouter une option permettant de visualiser par type de cas.
 Puis rajouter une une timeline en bas du graphique pour pouvoir voir l'évolution
+
+Test pour commit sur branche WorkTeam
