@@ -38,6 +38,83 @@ CoronavirusWorld$date <- as.Date(CoronavirusWorld$date)
 ```
 
 ```{r}
-CoronavirusWorld$category <- ifelse(CoronavirusWorld$cases >= -1 & CoronavirusWorld$cases <= 0, 0, ifelse(CoronavirusWorld$cases >=1 & CoronavirusWorld$cases <= 100, 1, ifelse(CoronavirusWorld$cases >= 101 & CoronavirusWorld$cases <= 1000, 2, ifelse(CoronavirusWorld$cases >= 1001 & CoronavirusWorld$cases <= 3000, 4, ifelse(CoronavirusWorld$cases >= 3001 & CoronavirusWorld$cases <= 5000, 5, ifelse(CoronavirusWorld$cases >= 5001 & CoronavirusWorld$cases <= 10000, 8))))))
+CoronavirusWorld$category <- ifelse(
+  CoronavirusWorld$cases >= -1 &
+    CoronavirusWorld$cases <= 0,
+  0,
+  ifelse(
+    CoronavirusWorld$cases >= 1 &
+      CoronavirusWorld$cases <= 100,
+    1,
+    ifelse(
+      CoronavirusWorld$cases >= 101 &
+        CoronavirusWorld$cases <= 1000,
+      2,
+      ifelse(
+        CoronavirusWorld$cases >= 1001 &
+          CoronavirusWorld$cases <= 3000,
+        4,
+        ifelse(
+          CoronavirusWorld$cases >= 3001 &
+            CoronavirusWorld$cases <= 5000,
+          5,
+          ifelse(
+            CoronavirusWorld$cases >= 5001 &
+              CoronavirusWorld$cases <= 10000,
+            8,
+            ifelse(
+              CoronavirusWorld$cases >= 10001 &
+                CoronavirusWorld$cases <= 20000,
+              10,
+              ifelse(
+                CoronavirusWorld$cases >= 20001 &
+                  CoronavirusWorld$cases <= 50000,
+                15,
+                ifelse(
+                  CoronavirusWorld$cases >= 50001 &
+                    CoronavirusWorld$cases <= 100000,
+                  20,
+                  ifelse(
+                    CoronavirusWorld$cases >= 100001 &
+                      CoronavirusWorld$cases <= 200000,
+                    25,
+                    ifelse(
+                      CoronavirusWorld$cases >= 200001 &
+                        CoronavirusWorld$cases <= Inf,
+                      30,
+                      35
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
 ```
 
+```{r}
+ZtestCovid <- filter(CoronavirusWorld, type == "confirmed" & date =="2020-04-08")
+```
+
+```{r}
+content <- paste("<strong>", ZtestCovid$name, "</strong>", "<br/>", ZtestCovid$cases, "Cases")
+
+leaflet(ZtestCovid) %>% 
+  addFullscreenControl() %>%
+  addProviderTiles(providers$CartoDB.DarkMatter) %>%
+  addCircleMarkers(
+    radius = ~sqrt(category)*5, popup = content,
+    color = "red",
+    stroke = FALSE, fillOpacity = 0.3
+  )
+```
+
+Problème de nom à régler sur la carte (le nom du pays ne s'affiche pas en cliquant sur le popup)
+Penser également à faire le cumul sur la carte
+
+Ensuite, rajouter une option permettant de visualiser par type de cas.
+Puis rajouter une une timeline en bas du graphique pour pouvoir voir l'évolution
