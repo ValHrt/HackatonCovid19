@@ -225,7 +225,7 @@ WorldMapCovid <- filter(WorldSpreadCovid, date == max(date))
 ```
 
 ```{r}
-content <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Cases", "<br/>", WorldMapCovid$CumulMorts, "Décés", "<br/>", WorldMapCovid$CumulSoignes, "Soignés")
+content <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Cas", "<br/>", WorldMapCovid$CumulMorts, "Décés", "<br/>", WorldMapCovid$CumulSoignes, "Soignés")
 
 leaflet(WorldMapCovid) %>% 
   addFullscreenControl() %>%
