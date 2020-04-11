@@ -18,6 +18,8 @@ library(tidyr)
 library(leaflet)
 library(leaflet.extras)
 library(leaftime)
+library(purrr)
+library(leafpop)
 ```
 
 ```{r}
@@ -219,11 +221,11 @@ WorldSpreadCovid$category3 <- ifelse(
 ```
 
 ```{r}
-WorldMapCovid <- filter(WorldSpreadCovid, date =="2020-04-08")
+WorldMapCovid <- filter(WorldSpreadCovid, date == max(date))
 ```
 
 ```{r}
-content <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Cases")
+content <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Cas", "<br/>", WorldMapCovid$CumulMorts, "Décés", "<br/>", WorldMapCovid$CumulSoignes, "Soignés")
 
 leaflet(WorldMapCovid) %>% 
   addFullscreenControl() %>%
@@ -231,9 +233,10 @@ leaflet(WorldMapCovid) %>%
   addCircleMarkers(
     radius = ~sqrt(category1)*5, popup = content,
     color = "red",
-    stroke = FALSE, fillOpacity = 0.3
-  )
+    stroke = FALSE, fillOpacity = 0.4)
 ```
 
 Ensuite, rajouter une option permettant de visualiser par type de cas.
 Puis rajouter une une timeline en bas du graphique pour pouvoir voir l'évolution
+
+Test pour commit sur branche WorkTeam
