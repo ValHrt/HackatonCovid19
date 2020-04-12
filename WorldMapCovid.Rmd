@@ -225,21 +225,43 @@ WorldMapCovid <- filter(WorldSpreadCovid, date == max(date))
 ```
 
 ```{r}
-content <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Cas", "<br/>", WorldMapCovid$CumulMorts, "Décés", "<br/>", WorldMapCovid$CumulSoignes, "Soignés")
+content <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", "<strong>", WorldMapCovid$CumulConfirmes, "Confirmés", "</strong>", "<br/>", WorldMapCovid$CumulMorts, "Décés", "<br/>", WorldMapCovid$CumulSoignes, "Soignés")
 
-leaflet(WorldMapCovid) %>% 
+content2 <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Confirmés", "<br/>", "<strong>", WorldMapCovid$CumulMorts, "Décés", "</strong>", "<br/>", WorldMapCovid$CumulSoignes, "Soignés")
+ 
+content3 <- paste("<strong>", WorldMapCovid$name, "</strong>", "<br/>", WorldMapCovid$CumulConfirmes, "Confirmés", "<br/>", WorldMapCovid$CumulMorts, "Décés", "<br/>", "<strong>", WorldMapCovid$CumulSoignes, "Soignés", "</strong>")
+
+leaflet(WorldMapCovid) %>%
   addFullscreenControl() %>%
   addProviderTiles(providers$CartoDB.DarkMatter) %>%
   addCircleMarkers(
-    radius = ~sqrt(category1)*5, popup = content,
+    radius = ~ sqrt(category1) * 5,
+    popup = content,
     color = "orange",
-    stroke = FALSE, fillOpacity = 0.6)  %>% 
-  addCircleMarkers(radius = ~sqrt(category3)*5, popup = content,
+    stroke = FALSE,
+    fillOpacity = 0.6,
+    group = "Confirmés"
+  )  %>%
+  addCircleMarkers(
+    radius = ~ sqrt(category3) * 5,
+    popup = content3,
     color = "green",
-    stroke = FALSE, fillOpacity = 1) %>% 
-  addCircleMarkers(radius = ~sqrt(category2)*5, popup = content,
+    stroke = FALSE,
+    fillOpacity = 1,
+    group = "Soignés"
+  ) %>%
+  addCircleMarkers(
+    radius = ~ sqrt(category2) * 5,
+    popup = content2,
     color = "red",
-    stroke = FALSE, fillOpacity = 1)
+    stroke = FALSE,
+    fillOpacity = 1,
+    group = "Décès") %>%
+  addLayersControl(
+    overlayGroups = c("Confirmés", "Soignés", "Décès"),
+    options = layersControlOptions(collapsed = FALSE),
+    position = 'topright'
+  )
 ```
 
 Puis rajouter une une timeline en bas du graphique pour pouvoir voir l'évolution
