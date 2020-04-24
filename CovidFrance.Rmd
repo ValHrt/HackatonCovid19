@@ -1,0 +1,25 @@
+---
+title: "Covid-19 France"
+author: "Valentin Henriot"
+date: "24/04/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+CovidFrance <- read.csv("https://raw.githubusercontent.com/opencovid19-fr/data/master/dist/chiffres-cles.csv")
+```
+
+Faire une analyse par départements / régions 
+
+Choisir une seule source de données pour éviter les doublons
