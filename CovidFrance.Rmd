@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(readr)
 library(ggplot2)
 library(dplyr)
@@ -17,9 +17,7 @@ library(tidyr)
 ```
 
 ```{r}
-CovidFrance <- read.csv("https://raw.githubusercontent.com/opencovid19-fr/data/master/dist/chiffres-cles.csv")
+CovidFrance <- read.csv("https://www.data.gouv.fr/fr/datasets/r/eceb9fb4-3ebc-4da3-828d-f5939712600a")
 ```
 
-Faire une analyse par départements / régions 
-
-Choisir une seule source de données pour éviter les doublons
+Voir si utilité de traiter ces données
