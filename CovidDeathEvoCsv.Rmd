@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+1er tableau pour Florian : évolution de la mortalité par pays / dates
+
 ```{r}
 Xtest <- coronavirus %>% group_by(Country.Region, type) %>% filter(type == "death")
 Xtest[Xtest == "" ] <- NA  # argument coronavirus lié à HackatonCoronavirus.Rmd
@@ -29,5 +31,24 @@ pivot_wider(names_from = date, values_from = cases)
 ```
 
 ```{r}
-write.csv2(Xtest2, file = "CovidR.csv")
+write.csv2(Xtest2, file = "CovidR.csv") # tableau pour Florian (dates en colonnes)
 ```
+
+2eme tableau pour Valentin : prise en compte du nombre d'infectés, soignés, décédés. 
+
+```{r}
+CovidTableau <- coronavirus %>% group_by(Country.Region, type)
+CovidTableau[CovidTableau == "" ] <- NA
+
+CovidTableau$name <- ifelse(is.na(CovidTableau$Province.State) == TRUE, 
+                                paste0(CovidTableau$Country.Region), paste0(CovidTableau$Province.State))
+
+CovidTableau$Province.State <- NULL
+
+CovidTableau$date <- as.Date(CovidTableau$date)
+```
+
+```{r}
+write.csv2(CovidTableau, file = "CovidTableau.csv") # tableau pour Valentin (analyse sur logiciel Tableau)
+```
+
