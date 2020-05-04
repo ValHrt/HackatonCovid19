@@ -1,0 +1,33 @@
+---
+title: "Fichier CSV évolution"
+author: "Valentin Henriot"
+date: "04/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+Xtest <- coronavirus %>% group_by(Country.Region, type) %>% filter(type == "death")
+Xtest[Xtest == "" ] <- NA  # argument coronavirus lié à HackatonCoronavirus.Rmd
+
+Xtest$name <- ifelse(is.na(Xtest$Province.State) == TRUE, 
+                                paste0(Xtest$Country.Region), paste0(Xtest$Province.State))
+
+Xtest$Province.State <- NULL
+#Xtest$Lat <- NULL
+#Xtest$Long <- NULL
+Xtest$type <- NULL
+
+Xtest$date <- as.Date(Xtest$date)
+Xtest$cases <- as.numeric(Xtest$cases)
+
+Xtest2 <- Xtest %>%
+pivot_wider(names_from = date, values_from = cases)
+```
+
+```{r}
+write.csv2(Xtest2, file = "CovidR.csv")
+```

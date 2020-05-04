@@ -18,7 +18,7 @@ get_token()
 ```
 
 ```{r}
-covidTwitter <- search_tweets("#coronavirus", n=1000, include_rts = FALSE, retryonratelimit = TRUE)
+covidTwitter <- search_tweets("#confinement", n=1000, include_rts = FALSE, retryonratelimit = TRUE)
 ```
 
 ```{r}
