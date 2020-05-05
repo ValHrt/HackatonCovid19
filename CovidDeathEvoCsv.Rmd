@@ -52,3 +52,14 @@ CovidTableau$date <- as.Date(CovidTableau$date)
 write.csv2(CovidTableau, file = "CovidTableau.csv") # tableau pour Valentin (analyse sur logiciel Tableau)
 ```
 
+3eme tableau Valentin pour analyse complémentaire
+
+```{r}
+CovidTableau2 <- CovidTableau %>%
+pivot_wider(names_from = type, values_from = cases)
+```
+
+```{r}
+write.csv2(CovidTableau2, file = "CovidTableau2.csv") # tableau 2 pour Valentin (analyse sur logiciel Tableau)
+```
+
